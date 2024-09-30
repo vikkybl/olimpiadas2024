@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tarot Darika - Todas las Cartas</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/info.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">TAROT <span>DARIKA&copy;</span></div>
+            <div class="nav-links">
+                <a href="./index.html">Inicio</a>
+                <a href="./info.html">Todas las Cartas</a>
+                <a href="https://github.com/MarianoGonzalez05/plataformas-moviles-entregas" class="cta-button" target="_blank">Repositorio GitHub</a>
+            </div>
+        </nav>
+    </header>
+<br>
+<br>
+    <section class="all-cards">
+        <h1>TODAS LAS CARTAS</h1>
+        <div id="cards-container" class="cards-container">
+            <!-- Aquí se mostrarán todas las cartas -->
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 Mariano Gonzalez Plataformas Moviles.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                const response = await fetch('https://tarot-api-es.vercel.app/api/v1/cards');
+                if (!response.ok) {
+                    throw new Error('Network response was not ok: ' + response.statusText);
+                }
+                const data = await response.json();
+
+                const cardsContainer = document.getElementById('cards-container');
+                cardsContainer.innerHTML = '';
+
+                data.cards.forEach(card => {
+                    const cardElement = document.createElement('div');
+                    cardElement.className = 'card';
+                    cardElement.innerHTML = `
+                        <img src="${card.image}" alt="${card.name}">
+                        <div class="card-info">
+                            <h2>${card.name}</h2>
+                            <p>${card.meaning_up}</p>
+                        </div>
+                    `;
+                    cardsContainer.appendChild(cardElement);
+                });
+            } catch (error) {
+                console.error('Error fetching all tarot cards:', error);
+                document.querySelector('.all-cards').innerHTML = `<p class="error-message">Hubo un problema al obtener las cartas. Inténtalo de nuevo más tarde.</p>`;
+            }
+        });
+    </script>
+</body>
+</html>
