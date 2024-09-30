@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tarot Darika</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">CANSER<span><!---&copy;-->BERO</span></div>
+            <div class="nav-links">
+                <a href="./index.html" class="active">Inicio</a>
+                <a href="./info.html">Todas las cartas</a>
+                <a href="https://github.com/MarianoGonzalez05/plataformas-moviles-entregas" class="cta-button" target="_blank">Repositorio GitHub</a>
+            </div>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>¿QUERES SABER TU FUTURO?<br>¿QUE TIENEN LAS CARTAS PARA VOS?</h1>
+            <p>Elegí tu tiarada</p>
+            
+            <button class="cta-button" id="draw-button" data-cantidad="5">Tirada Amorosa (5)</button>
+            <button class="cta-button" id="draw-button" data-cantidad="6">Tirada Nuevo Proyecto (6)</button>
+            <button class="cta-button" id="draw-button" data-cantidad="7">Tirada de Vidas Pasadas (7)</button>
+            <button class="cta-button" id="draw-button" data-cantidad="8">Tirada Karma (8)</button>
+        </div>
+    </section>
+
+    <section id="tarot-cards" class="tarot-cards">
+      
+    </section>
+
+    <footer>
+        <p>&copy; 2024 Mariano Gonzalez; Victoria Blanco - Plataformas Moviles.</p>
+    </footer>
+
+    <script>
+        // Seleccionar todos los botones con la clase 'draw-button'
+        const botones = document.querySelectorAll('.cta-button');
+      
+        // Recorrer cada botón y agregarle un evento 'click'
+        botones.forEach(boton => {
+          boton.addEventListener('click', async function() {
+            // Obtener el valor del atributo 'data-cantidad' del botón clicado
+            const numberOfCards = this.getAttribute('data-cantidad');
+
+            try {
+              const response = await fetch(`https://tarot-api-es.vercel.app/api/v1/random?n=${numberOfCards}`);
+              if (!response.ok) {
+                throw new Error('Network response was not ok');
+              }
+              const data = await response.json();
+      
+              const tarotCardsContainer = document.getElementById('tarot-cards');
+              tarotCardsContainer.innerHTML = ''; // Limpiar las cartas anteriores
+      
+              data.cards.forEach(card => {
+                const cardElement = document.createElement('div');
+                cardElement.className = 'card';
+                cardElement.innerHTML = `
+                <div class="grid-container">
+                  <div class="grid-item">
+                    <img src="${card.image}" alt="${card.name}">
+                    </div>
+                </div>                                   
+                `;
+                // <div class="card-info">
+                  //   <h2>${card.name}</h2>
+                  //   <p>${card.meaning_up}</p>
+                  // </div> 
+                tarotCardsContainer.appendChild(cardElement); // Añadir nueva carta
+              });
+
+              // Una vez que las cartas se cargan, desplazar la página hacia la sección de cartas
+              tarotCardsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } catch (error) {
+              console.error('Error fetching tarot data:', error);
+              alert('Hubo un problema al obtener las cartas. Inténtalo de nuevo.');
+            }
+          });
+        });
+    </script>
+      
+</body>
+</html>
